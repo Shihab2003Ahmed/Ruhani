@@ -20,12 +20,11 @@ jobs:
       - name: Install Android SDK tools
         run: |
           export ANDROID_HOME=${{ runner.workspace }}/android-sdk
-          mkdir -p $ANDROID_HOME
+          mkdir -p $ANDROID_HOME/cmdline-tools
           wget -q https://dl.google.com/android/repository/commandlinetools-linux-6858069_latest.zip -O android-tools.zip
-          unzip -q android-tools.zip -d $ANDROID_HOME
-          mv $ANDROID_HOME/cmdline-tools/* $ANDROID_HOME/tools
-          echo "export PATH=$PATH:$ANDROID_HOME/tools/bin" >> $GITHUB_ENV
-          yes | $ANDROID_HOME/cmdline-tools/bin/sdkmanager --install "platforms;android-29" "build-tools;29.0.3"
+          unzip -q android-tools.zip -d $ANDROID_HOME/cmdline-tools
+          echo "export PATH=$PATH:$ANDROID_HOME/cmdline-tools/tools/bin" >> $GITHUB_ENV
+          yes | $ANDROID_HOME/cmdline-tools/tools/bin/sdkmanager --install "platforms;android-29" "build-tools;29.0.3"
         shell: bash
 
       - name: Install Aidl
