@@ -17,14 +17,14 @@ jobs:
           java-version: '11'
           distribution: 'adopt'  # Specify the Java distribution you want to use
 
-      - name: Install Android SDK tools
+      - name: Set up Android SDK
         run: |
           export ANDROID_HOME=${{ runner.workspace }}/android-sdk
-          mkdir -p $ANDROID_HOME/cmdline-tools
+          mkdir -p $ANDROID_HOME
           wget -q https://dl.google.com/android/repository/commandlinetools-linux-6858069_latest.zip -O android-tools.zip
-          unzip -q android-tools.zip -d $ANDROID_HOME/cmdline-tools
+          unzip -q android-tools.zip -d $ANDROID_HOME
           echo "export PATH=$PATH:$ANDROID_HOME/cmdline-tools/tools/bin" >> $GITHUB_ENV
-          yes | $ANDROID_HOME/cmdline-tools/tools/bin/sdkmanager --install "platforms;android-29" "build-tools;29.0.3"
+          echo "sdk.dir=$ANDROID_HOME" >> $GITHUB_ENV
         shell: bash
 
       - name: Install Aidl
@@ -41,6 +41,9 @@ jobs:
         with:
           path: .buildozer
           key: ${{ runner.os }}-${{ hashFiles('buildozer.spec') }}
+
+      - name: List Android SDK Contents
+        run: ls -la $ANDROID_HOME
 
       - name: Build with Buildozer
         uses: ArtemSBulgakov/buildozer-action@v1
