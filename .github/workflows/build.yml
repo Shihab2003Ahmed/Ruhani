@@ -43,6 +43,18 @@ jobs:
           path: .buildozer
           key: ${{ runner.os }}-${{ hashFiles('buildozer.spec') }}
 
+      - name: List Android SDK Contents  # Add this step
+        run: |
+          ls -la $ANDROID_HOME
+        env:
+          ANDROID_HOME: ${{ runner.workspace }}/android-sdk
+
+      - name: List Installed SDK Components  # Add this step
+        run: |
+          $ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager --list
+        env:
+          ANDROID_HOME: ${{ runner.workspace }}/android-sdk
+
       - name: Build with Buildozer
         uses: ArtemSBulgakov/buildozer-action@v1
         id: buildozer
