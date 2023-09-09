@@ -47,7 +47,7 @@ jobs:
         uses: ArtemSBulgakov/buildozer-action@v1
         id: buildozer
         with:
-          command: buildozer android debug
+          command: buildozer android debug --sdk_root=$ANDROID_HOME  # Specify the SDK root
           buildozer_version: master
 
       - name: Upload artifacts
