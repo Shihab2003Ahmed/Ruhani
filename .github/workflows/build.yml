@@ -8,26 +8,40 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v2
+      - name: Checkout code
+        uses: actions/checkout@v2
 
-      # used to cache dependencies with a timeout
-      - name: Get Date
-        id: get-date
+      - name: Set up JDK
+        uses: actions/setup-java@v2
+        with:
+          java-version: '11'
+
+      - name: Install Android Build Tools
         run: |
-          echo "::set-output name=date::$(/bin/date -u "+%Y%m%d")"
-        shell: bash
+          mkdir -p $ANDROID_HOME
+          wget -q https://dl.google.com/android/repository/commandlinetools-linux-6858069_latest.zip -O android-tools.zip
+          unzip -q android-tools.zip -d $ANDROID_HOME
+          echo "y" | $ANDROID_HOME/cmdline-tools/bin/sdkmanager --install "platforms;android-29" "build-tools;29.0.3"
+        env:
+          ANDROID_HOME: ${{ runner.workspace }}/android-sdk
 
+      - name: Install Aidl
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y aidl
+          
       - name: Cache Buildozer global directory
         uses: actions/cache@v2
         with:
           path: .buildozer_global
-          key: buildozer-global-${{ hashFiles('buildozer.spec') }} # Replace with your path
+          key: buildozer-global-${{ hashFiles('buildozer.spec') }}
 
-      - uses: actions/cache@v2
+      - name: Cache Buildozer dependencies
+        uses: actions/cache@v2
         with:
           path: .buildozer
-          key: ${{ runner.os }}-${{ steps.get-date.outputs.date }}-${{ hashFiles('buildozer.spec') }}
-
+          key: ${{ runner.os }}-${{ hashFiles('buildozer.spec') }}
+          
       - name: Build with Buildozer
         uses: ArtemSBulgakov/buildozer-action@v1
         id: buildozer
