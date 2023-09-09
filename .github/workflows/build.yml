@@ -1,7 +1,7 @@
 name: Graceful Gain
 on:
   push:
-    branches: [ main ]
+    branches: [main]
 
 jobs:
   build:
@@ -15,6 +15,7 @@ jobs:
         uses: actions/setup-java@v2
         with:
           java-version: '11'
+          distribution: 'adopt'  # Specify the Java distribution you want to use
 
       - name: Install Android Build Tools
         run: |
@@ -29,7 +30,7 @@ jobs:
         run: |
           sudo apt-get update
           sudo apt-get install -y aidl
-          
+
       - name: Cache Buildozer global directory
         uses: actions/cache@v2
         with:
@@ -41,7 +42,7 @@ jobs:
         with:
           path: .buildozer
           key: ${{ runner.os }}-${{ hashFiles('buildozer.spec') }}
-          
+
       - name: Build with Buildozer
         uses: ArtemSBulgakov/buildozer-action@v1
         id: buildozer
