@@ -31,6 +31,9 @@ source.include_exts = py,png,jpg,kv,txt,atlas
 # (str) Application versioning (method 1)
 version = 0.1
 
+# Specify the Android NDK version
+android.ndk = 25.2.9519653
+
 # (str) Application versioning (method 2)
 # version.regex = __version__ = ['"](.*)['"]
 # version.filename = %(source.dir)s/main.py
