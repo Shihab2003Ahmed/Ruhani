@@ -4,7 +4,7 @@
 title = Graceful Gain
 
 # (str) Package name
-package.name = kivyapp
+package.name = kivyapp  
 
 # (str) Package domain (needed for android/ios packaging)
 package.domain = org.test
