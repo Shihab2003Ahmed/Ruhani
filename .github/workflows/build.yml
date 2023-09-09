@@ -17,19 +17,14 @@ jobs:
           java-version: '11'
           distribution: 'adopt'  # Specify the Java distribution you want to use
 
-      - name: Install Android Build Tools
+      - name: Set up Android SDK
         run: |
-          mkdir -p $ANDROID_HOME
-          wget -q https://dl.google.com/android/repository/commandlinetools-linux-6858069_latest.zip -O android-tools.zip
-          unzip -q android-tools.zip -d $ANDROID_HOME
-          echo "y" | $ANDROID_HOME/cmdline-tools/bin/sdkmanager --install "platforms;android-29" "build-tools;29.0.3"
-        env:
-          ANDROID_HOME: ${{ runner.workspace }}/android-sdk
-
+          export ANDROID_HOME=${{ runner.workspace }}/android-sdk
+          mkdir -p $ANDROID_HOME/tools
+          mv $ANDROID_HOME/cmdline-tools/* $ANDROID_HOME/tools
+        shell: bash
       - name: Install Aidl
-        run: |
-          sudo apt-get update
-          sudo apt-get install -y aidl
+        run: sudo apt-get update && sudo apt-get install -y aidl
 
       - name: Cache Buildozer global directory
         uses: actions/cache@v2
@@ -43,23 +38,11 @@ jobs:
           path: .buildozer
           key: ${{ runner.os }}-${{ hashFiles('buildozer.spec') }}
 
-      - name: List Android SDK Contents  # Add this step
-        run: |
-          ls -la $ANDROID_HOME
-        env:
-          ANDROID_HOME: ${{ runner.workspace }}/android-sdk
-
-      - name: List Installed SDK Components  # Add this step
-        run: |
-          $ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager --list
-        env:
-          ANDROID_HOME: ${{ runner.workspace }}/android-sdk
-
       - name: Build with Buildozer
         uses: ArtemSBulgakov/buildozer-action@v1
         id: buildozer
         with:
-          command: buildozer android debug --sdk_root=$ANDROID_HOME  # Specify the SDK root
+          command: buildozer android debug
           buildozer_version: master
 
       - name: Upload artifacts
