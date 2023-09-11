@@ -21,7 +21,7 @@ jobs:
         run: |
           export ANDROID_HOME=${{ runner.workspace }}/android-sdk
           mkdir -p $ANDROID_HOME
-          wget -q https://developer.android.com/ndk/downloads#lts-downloads -O android-tools.zip
+          wget -q https://dl.google.com/android/repository/commandlinetools-linux-6858069_latest.zip -O android-tools.zip
           unzip -q android-tools.zip -d $ANDROID_HOME
           echo "export PATH=$PATH:$ANDROID_HOME/cmdline-tools/tools/bin" >> $GITHUB_ENV
           echo "sdk.dir=$ANDROID_HOME" >> $GITHUB_ENV
