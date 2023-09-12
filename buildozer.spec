@@ -40,7 +40,7 @@ android.ndk = 25.1.8937393
 
 # (list) Application requirements
 # comma separated e.g. requirements = sqlite3,kivy
-requirements = python3.9.5 ,kivy
+requirements = python3==3.7.6 ,kivy
 
 # (str) Custom source folders for requirements
 # Sets custom source for any requirements with recipes
