@@ -32,7 +32,7 @@ source.include_exts = py,png,jpg,kv,txt,atlas
 version = 0.1
 
 # Specify the Android NDK version
-android.ndk = 25.1.8937393
+#android.ndk = 25.1.8937393
 
 # (str) Application versioning (method 2)
 # version.regex = __version__ = ['"](.*)['"]
