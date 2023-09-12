@@ -1,56 +1,39 @@
-name: Graceful Gain
+name: CI
 on:
   push:
-    branches: [main] 
-    
+    branches: [ main ]
+
 jobs:
   build:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-20.04
 
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v2
+      - uses: actions/checkout@v2
 
-      - name: Set up JDK
-        uses: actions/setup-java@v2
-        with:
-          java-version: '11'
-          distribution: 'adopt'  # Specify the Java distribution you want to use
-
-      - name: Set up Android SDK
+      # used to cache dependencies with a timeout
+      - name: Get Date
+        id: get-date
         run: |
-          export ANDROID_HOME=${{ runner.workspace }}/android-sdk
-          mkdir -p $ANDROID_HOME
-          wget -q https://dl.google.com/android/repository/commandlinetools-linux-6858069_latest.zip -O android-tools.zip
-          unzip -q android-tools.zip -d $ANDROID_HOME
-          echo "export PATH=$PATH:$ANDROID_HOME/cmdline-tools/tools/bin" >> $GITHUB_ENV
-          echo "sdk.dir=$ANDROID_HOME" >> $GITHUB_ENV
+          echo "::set-output name=date::$(/bin/date -u "+%Y%m%d")"
         shell: bash
-
-      - name: Install Aidl
-        run: sudo apt-get update && sudo apt-get install -y aidl
 
       - name: Cache Buildozer global directory
         uses: actions/cache@v2
         with:
           path: .buildozer_global
-          key: buildozer-global-${{ hashFiles('buildozer.spec') }}
+          key: buildozer-global-${{ hashFiles('buildozer.spec') }} # Replace with your path
 
-      - name: Cache Buildozer dependencies
-        uses: actions/cache@v2
+      - uses: actions/cache@v2
         with:
           path: .buildozer
-          key: ${{ runner.os }}-${{ hashFiles('buildozer.spec') }}
-
-      - name: List Android SDK Contents
-        run: ls -la $ANDROID_HOME
+          key: ${{ runner.os }}-${{ steps.get-date.outputs.date }}-${{ hashFiles('buildozer.spec') }}
 
       - name: Build with Buildozer
         uses: ArtemSBulgakov/buildozer-action@v1
         id: buildozer
         with:
           command: buildozer android debug
-          buildozer_version: 1.2.0
+          buildozer_version: stable
 
       - name: Upload artifacts
         uses: actions/upload-artifact@v2
